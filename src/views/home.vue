@@ -35,19 +35,67 @@
                 </el-submenu>
             </el-menu>
         </el-aside>
-        <el-main>Main</el-main>
+        <el-main>
+            <el-form ref="form" label-width="120px">
+                <el-form-item label="链接库服务：">
+                    <el-select v-model="serve" placeholder="请选择服务">
+                    <el-option label="预发布服" value="pre"></el-option>
+                    <el-option label="测试服" value="test"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="表名：">
+                    <el-input v-model="table"></el-input>
+                </el-form-item>
+                <el-form-item label="字段：">
+                    <el-input v-model="table_key"></el-input>
+                </el-form-item>
+                <el-form-item label="文件类型：">
+                    <el-select v-model="file_type" placeholder="请选择生成文件类型：">
+                    <el-option label="excel" value="excel"></el-option>
+                    <el-option label="csv" value="csv"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="生成文件名：">
+                    <el-input v-model="download_name"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="onSubmit">保存</el-button>
+                </el-form-item>
+            </el-form>
+        </el-main>
     </el-container>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
 export default {
     name: 'home',
     data: () => {
-        return {}
+        return {
+            serve: 'pre',
+            table: '',
+            table_key: '',
+            download_name: '',
+            file_type: 'csv'
+        }
     },
     methods: {
-        
+        onSubmit() {
+            axios.post('http://localhost:3000/submitData', {
+                serve: this.serve,
+                table: this.table,
+                table_key: this.table_key,
+                download_name: 'class_num',
+                file_type: 'csv'
+            })
+            .then(res=> {
+                console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
     }
 }
 </script>
@@ -66,7 +114,6 @@ export default {
     .el-main {
         background-color: #fff;
         color: #333;
-        text-align: center;
     }
     
     body > .el-container {
@@ -80,5 +127,9 @@ export default {
     
     .el-container:nth-child(7) .el-aside {
         line-height: 320px;
+    }
+
+    .el-form-item__content {
+        text-align: left;
     }
 </style>
